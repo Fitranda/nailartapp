@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Button, FlatList, StyleSheet, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
+import '../global';
 
 // Mendapatkan dimensi layar perangkat
 const { width, height } = Dimensions.get('window');
@@ -66,7 +67,7 @@ const HomeScreen = ({ navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navItem}
-          onPress={() => navigation.navigate('Login')} // Navigasi ke halaman Login
+          onPress={() => navigation.navigate('ProfileScreen')} // Navigasi ke halaman Login
         >
           <Text style={styles.navText}>Profile</Text>
         </TouchableOpacity>

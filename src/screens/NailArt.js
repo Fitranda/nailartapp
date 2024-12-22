@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import '../global';
 
 const NailArt = ({ navigation }) => {
   const [services, setServices] = useState([]);
 
   useEffect(() => {
     // Ambil data layanan dari API
-    fetch('http://192.168.59.103/nailartapp/src/service/api.php?op=getServices')
+    fetch(`http://${global.myApi}/nailartapp/src/service/api.php?op=getServices`)
       .then((response) => response.json())
       .then((data) => {
         if (data && data.data) {

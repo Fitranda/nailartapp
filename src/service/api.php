@@ -14,9 +14,9 @@ if ($koneksi->connect_error) {
 $op = $_GET['op'];
 switch($op) {
     
-    case 'getServices': getServices(); break;
-    case 'createService': createService(); break;
-    case 'updateService': updateService(); break;
+    // case 'getServices': getServices(); break;
+    // case 'createService': createService(); break;
+    // case 'updateService': updateService(); break;
     case 'getTestimonials': getTestimonials(); break;
     case 'deleteTestimonial': deleteTestimonial(); break;
     case 'getBookings': getBookings(); break;
@@ -33,6 +33,11 @@ switch($op) {
     case 'deleteUser': deleteUser(); break;
     case 'registerUser': registerUser(); break;
     case 'loginUser': loginUser(); break;
+    // service
+    case 'getServices': getServices(); break;
+    case 'createService': createService(); break;
+    case 'updateService': updateService(); break;
+    case 'deleteService': deleteService(); break;
     default: normal(); break;
 }
 
@@ -43,13 +48,13 @@ function normal() {
 // Get all services
 function getServices() {
     global $koneksi;
-    $sql = "SELECT * FROM Services";
-    $result = mysqli_query($koneksi, $sql);
+    $sql = "SELECT * FROM services";
+    $result = $koneksi->query($sql);
     $services = [];
-    while($row = mysqli_fetch_assoc($result)) {
+    while ($row = $result->fetch_assoc()) {
         $services[] = $row;
     }
-    echo json_encode(['data' => $services]);
+    echo json_encode(['status' => 'success', 'data' => $services]);
 }
 
 // Create a new service
@@ -58,80 +63,81 @@ function createService() {
     $nama_layanan = $_POST['nama_layanan'];
     $deskripsi = $_POST['deskripsi'];
     $harga = $_POST['harga'];
-    $gambar = $_POST['gambar'];
+    $gambar = uploadImage();
 
-    if ($nama_layanan && $harga) {
-        $sql = "INSERT INTO Services (nama_layanan, deskripsi, harga, gambar) 
-                VALUES ('$nama_layanan', '$deskripsi', '$harga', '$gambar')";
-        $result = mysqli_query($koneksi, $sql);
-        $message = $result ? 'Service created successfully' : 'Failed to create service';
-    } else {
-        $message = 'Missing required fields';
+    if (!$gambar) {
+        echo json_encode(['status' => 'error', 'message' => 'Failed to upload image']);
+        return;
     }
-    echo json_encode(['message' => $message]);
+
+    $sql = "INSERT INTO services (nama_layanan, deskripsi, harga, gambar) VALUES (?, ?, ?, ?)";
+    $stmt = $koneksi->prepare($sql);
+    $stmt->bind_param("ssis", $nama_layanan, $deskripsi, $harga, $gambar);
+    if ($stmt->execute()) {
+        echo json_encode(['status' => 'success', 'message' => 'Service created successfully']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Failed to create service']);
+    }
 }
 
 // Update an existing service
 function updateService() {
     global $koneksi;
-
     $id_layanan = $_GET['id_layanan'];
     $nama_layanan = $_POST['nama_layanan'];
     $deskripsi = $_POST['deskripsi'];
     $harga = $_POST['harga'];
-    $gambar = $_POST['gambar'];
+    $gambar = uploadImage();
 
-    if ($id_layanan) {
-        $sql = "UPDATE Services SET 
-                    nama_layanan='$nama_layanan', 
-                    deskripsi='$deskripsi', 
-                    harga='$harga', 
-                    gambar='$gambar' 
-                WHERE id_layanan='$id_layanan'";
-
-        $q1 = mysqli_query($koneksi, $sql);
-
-        if ($q1) {
-            $hasil = "Service updated successfully";
-            $status = "success";
-        } else {
-            $hasil = "Failed to update service: " . mysqli_error($koneksi);
-            $status = "error";
-        }
-    } else {
-        $hasil = "ID layanan tidak ditemukan.";
-        $status = "error";
+    if (!$gambar) {
+        echo json_encode(['status' => 'error', 'message' => 'Failed to upload image']);
+        return;
     }
 
-    echo json_encode([ 
-        "status" => $status, 
-        "message" => $hasil 
-    ]);
+    $sql = "UPDATE services SET nama_layanan = ?, deskripsi = ?, harga = ?, gambar = ? WHERE id_layanan = ?";
+    $stmt = $koneksi->prepare($sql);
+    $stmt->bind_param("ssisi", $nama_layanan, $deskripsi, $harga, $gambar, $id_layanan);
+    if ($stmt->execute()) {
+        echo json_encode(['status' => 'success', 'message' => 'Service updated successfully']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Failed to update service']);
+    }
 }
 
 // Delete a service
 function deleteService() {
     global $koneksi;
-
-    $id_layanan = isset($_GET['id_layanan']) ? $_GET['id_layanan'] : null;
-
-    if (!$id_layanan) {
-        echo json_encode([ "status" => "error", "message" => "ID layanan tidak ditemukan" ]);
-        return;
-    }
-
-    $sql = "DELETE FROM Services WHERE id_layanan = '$id_layanan'";
-    $result = mysqli_query($koneksi, $sql);
-
-    if ($result) {
-        if (mysqli_affected_rows($koneksi) > 0) {
-            echo json_encode([ "status" => "success", "message" => "Service deleted successfully" ]);
-        } else {
-            echo json_encode([ "status" => "error", "message" => "Service with the provided ID does not exist" ]);
-        }
+    $id_layanan = $_GET['id_layanan'];
+    $sql = "DELETE FROM services WHERE id_layanan = ?";
+    $stmt = $koneksi->prepare($sql);
+    $stmt->bind_param("i", $id_layanan);
+    if ($stmt->execute()) {
+        echo json_encode(['status' => 'success', 'message' => 'Service deleted successfully']);
     } else {
-        echo json_encode([ "status" => "error", "message" => "Failed to delete service", "error" => mysqli_error($koneksi) ]);
+        echo json_encode(['status' => 'error', 'message' => 'Failed to delete service']);
     }
+}
+
+function uploadImage() {
+    if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
+        $fileTmpPath = $_FILES['gambar']['tmp_name'];
+        $fileName = $_FILES['gambar']['name'];
+        $fileSize = $_FILES['gambar']['size'];
+        $fileType = $_FILES['gambar']['type'];
+        $fileNameCmps = explode(".", $fileName);
+        $fileExtension = strtolower(end($fileNameCmps));
+
+        $allowedfileExtensions = array('jpg', 'gif', 'png', 'jpeg');
+        if (in_array($fileExtension, $allowedfileExtensions)) {
+            $uploadFileDir = './uploads/';
+            $dest_path = $uploadFileDir . $fileName;
+
+            if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                return $fileName;
+            }
+        }
+    }
+    return false;
 }
 
 // Get all users

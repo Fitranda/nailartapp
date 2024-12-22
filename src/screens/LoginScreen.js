@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Button, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import '../global';
 
 
 const LoginScreen = ({ navigation }) => {
@@ -15,9 +16,10 @@ const LoginScreen = ({ navigation }) => {
         const user = await AsyncStorage.getItem('user');
         if (user) {
           const parsedUser = JSON.parse(user);
-          console.log('User found in AsyncStorage:', parsedUser);
-          if (parsedUser.role === 'admin') {
-            navigation.replace('ServiceAdmin');
+          console.log('User found in AsyncStorage:', parsedUser.role == 'admin');
+          if (parsedUser.role == 'admin') {
+            console.log("Masuk");
+            navigation.replace('Navigasi');
           } else {
             navigation.replace('HomeScreen');
           }
@@ -63,14 +65,14 @@ const LoginScreen = ({ navigation }) => {
       }
 
       const data = await response.json();
-      console.log('Login response data:', data);
+      console.log('Login response data:', data.role);
 
       if (data.status === 'success') {
         await AsyncStorage.setItem('user', JSON.stringify(data.data));
         // Cek role dan navigasi berdasarkan role
-        if (data.data.role === 'admin') {
-          console.log('Navigating to ServiceAdmin');
-          navigation.replace('ServiceAdmin');
+        if (data.data.role == 'admin') {
+          console.log('Navigating to Navigation');
+          navigation.replace('Navigasi');
         } else {
           console.log('Navigating to HomeScreen');
           navigation.replace('HomeScreen');

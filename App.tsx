@@ -9,6 +9,13 @@ import NailArt from './src/screens/NailArt';
 import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import ServiceAdmin from './src/screens/ServiceAdmin';
+import Navigasi from './src/screens/Navigasi';
+import DashboardScreen from './src/screens/DashboardScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
+import SettingsScreen from './src/screens/SettingsScreen';
+import PegawaiScreen from './src/screens/PegawaiScreen';
+import PelayananScreen from './src/screens/PelayananScreen';
+import PemesananScreen from './src/screens/PemesananScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -46,6 +53,13 @@ const App = () => {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="ServiceAdmin" component={ServiceAdmin} />
+        <Stack.Screen name="Navigasi" component={Navigasi} />
+        <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+        <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
+        <Stack.Screen name="DashboardScreen" component={DashboardScreen} />
+        <Stack.Screen name="Pegawai" component={PegawaiScreen} />
+        <Stack.Screen name="Pelayanan" component={PelayananScreen} />
+        <Stack.Screen name="Pemesanan" component={PemesananScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
