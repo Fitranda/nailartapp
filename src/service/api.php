@@ -63,7 +63,7 @@ function createService() {
     $nama_layanan = $_POST['nama_layanan'];
     $deskripsi = $_POST['deskripsi'];
     $harga = $_POST['harga'];
-    $gambar = uploadImage();
+    $gambar = uploadImage($nama_layanan);
 
     if (!$gambar) {
         echo json_encode(['status' => 'error', 'message' => 'Failed to upload image']);
@@ -87,7 +87,7 @@ function updateService() {
     $nama_layanan = $_POST['nama_layanan'];
     $deskripsi = $_POST['deskripsi'];
     $harga = $_POST['harga'];
-    $gambar = uploadImage();
+    $gambar = uploadImage($nama_layanan);
 
     if (!$gambar) {
         echo json_encode(['status' => 'error', 'message' => 'Failed to upload image']);
@@ -118,7 +118,7 @@ function deleteService() {
     }
 }
 
-function uploadImage() {
+function uploadImage($nama) {
     if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
         $fileTmpPath = $_FILES['gambar']['tmp_name'];
         $fileName = $_FILES['gambar']['name'];
@@ -129,11 +129,12 @@ function uploadImage() {
 
         $allowedfileExtensions = array('jpg', 'gif', 'png', 'jpeg');
         if (in_array($fileExtension, $allowedfileExtensions)) {
+            $newFileName = uniqid('img_'.$nama, true) . '.' . $fileExtension;
             $uploadFileDir = './uploads/';
-            $dest_path = $uploadFileDir . $fileName;
+            $dest_path = $uploadFileDir . $newFileName;
 
             if (move_uploaded_file($fileTmpPath, $dest_path)) {
-                return $fileName;
+                return $newFileName;
             }
         }
     }

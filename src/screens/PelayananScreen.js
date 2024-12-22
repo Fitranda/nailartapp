@@ -86,7 +86,7 @@ const PelayananScreen = () => {
     setNamaLayanan(service.nama_layanan);
     setDeskripsi(service.deskripsi);
     setHarga(service.harga);
-    setGambar(service.gambar);
+    setGambar(`http://${global.myApi}/nailartapp/src/service/uploads/${service.gambar}`);
     setEditingService(service);
     setShowForm(true);
   };
@@ -100,7 +100,8 @@ const PelayananScreen = () => {
     });
 
     if (!result.canceled) {
-      setGambar(result.uri);
+      console.log('Image URI:', result.assets[0].uri);
+      setGambar(result.assets[0].uri);
     }
   };
 
@@ -153,14 +154,15 @@ const PelayananScreen = () => {
         data={services}
         keyExtractor={(item) => item.id_layanan.toString()}
         renderItem={({ item }) => (
+          console.log(`http://${global.myApi}/nailartapp/src/service/uploads/${item.gambar}`),
           <View style={styles.serviceItem}>
             <Image
               source={{ uri: `http://${global.myApi}/nailartapp/src/service/uploads/${item.gambar}` }}
               style={styles.serviceImage}
             />
             <View style={styles.serviceDetails}>
-              <Text style={styles.serviceText}>Nama Layanan: {item.nama_layanan}</Text>
-              <Text style={styles.serviceText}>Harga: {item.harga}</Text>
+              <Text style={styles.serviceText}>{item.nama_layanan}</Text>
+              <Text style={styles.serviceText}>{item.harga}</Text>
             </View>
             <Text style={styles.serviceDescription}>Deskripsi: {item.deskripsi}</Text>
             <View style={styles.serviceActions}>
