@@ -10,7 +10,7 @@ const DashboardScreen = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Admin Dashboard</Text>
       <View style={styles.grid}>
-        <TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate('Pegawai')}>
+        <TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate('PegawaiScreen')}>
           <MaterialCommunityIcons name="account-group" size={50} color="#007bff" />
           <Text style={styles.gridItemText}>Pegawai</Text>
         </TouchableOpacity>

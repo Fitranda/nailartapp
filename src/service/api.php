@@ -38,6 +38,10 @@ switch($op) {
     case 'createService': createService(); break;
     case 'updateService': updateService(); break;
     case 'deleteService': deleteService(); break;
+    case 'getPegawai': getPegawai(); break;
+    case 'createPegawai': createPegawai(); break;
+    case 'updatePegawai': updatePegawai(); break;
+    case 'deletePegawai': deletePegawai(); break;
     default: normal(); break;
 }
 
@@ -63,7 +67,7 @@ function createService() {
     $nama_layanan = $_POST['nama_layanan'];
     $deskripsi = $_POST['deskripsi'];
     $harga = $_POST['harga'];
-    $gambar = uploadImage($nama_layanan);
+    $gambar = uploadImage();
 
     if (!$gambar) {
         echo json_encode(['status' => 'error', 'message' => 'Failed to upload image']);
@@ -87,7 +91,7 @@ function updateService() {
     $nama_layanan = $_POST['nama_layanan'];
     $deskripsi = $_POST['deskripsi'];
     $harga = $_POST['harga'];
-    $gambar = uploadImage($nama_layanan);
+    $gambar = uploadImage();
 
     if (!$gambar) {
         echo json_encode(['status' => 'error', 'message' => 'Failed to upload image']);
@@ -118,7 +122,7 @@ function deleteService() {
     }
 }
 
-function uploadImage($nama) {
+function uploadImage() {
     if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
         $fileTmpPath = $_FILES['gambar']['tmp_name'];
         $fileName = $_FILES['gambar']['name'];
@@ -129,12 +133,11 @@ function uploadImage($nama) {
 
         $allowedfileExtensions = array('jpg', 'gif', 'png', 'jpeg');
         if (in_array($fileExtension, $allowedfileExtensions)) {
-            $newFileName = uniqid('img_'.$nama, true) . '.' . $fileExtension;
             $uploadFileDir = './uploads/';
-            $dest_path = $uploadFileDir . $newFileName;
+            $dest_path = $uploadFileDir . $fileName;
 
             if (move_uploaded_file($fileTmpPath, $dest_path)) {
-                return $newFileName;
+                return $fileName;
             }
         }
     }
@@ -653,6 +656,123 @@ function deletePromotion()
         echo json_encode(['message' => 'Missing required fields']);
     }
 }
+
+function getPegawai() {
+    global $koneksi;
+    $sql = "SELECT * FROM pegawai";
+    $result = mysqli_query($koneksi, $sql);
+    $pegawai = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $pegawai[] = $row;
+    }
+    echo json_encode(['data' => $pegawai]);
+}
+
+
+function createPegawai() {
+    global $koneksi;
+    $data = json_decode(file_get_contents("php://input"), true);
+    $nama = $data['nama'];
+    $tanggal_lahir = $data['tanggal_lahir'];
+    $jenis_kelamin = $data['jenis_kelamin'];
+    $email = $data['email'];
+    $password = password_hash($data['password'], PASSWORD_BCRYPT);
+
+    $sql = "INSERT INTO pegawai (nama, tanggal_lahir, jenis_kelamin, email, password) 
+            VALUES ('$nama', '$tanggal_lahir', '$jenis_kelamin', '$email', '$password')";
+    if (mysqli_query($koneksi, $sql)) {
+        echo json_encode(["status" => "success", "message" => "Pegawai created successfully"]);
+    } else {
+        echo json_encode(["status" => "error", "message" => "Failed to create pegawai"]);
+    }
+}
+function updatePegawai() {
+    global $koneksi;
+
+    // Mengambil data dari input JSON
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    // Validasi input
+    if (empty($data['id_pegawai']) || empty($data['nama']) || empty($data['tanggal_lahir']) || empty($data['jenis_kelamin']) || empty($data['email'])) {
+        echo json_encode(["status" => "error", "message" => "Missing required fields"]);
+        return;
+    }
+
+    // Mengamankan data input
+    $id_pegawai = mysqli_real_escape_string($koneksi, $data['id_pegawai']);
+    $nama = mysqli_real_escape_string($koneksi, $data['nama']);
+    $tanggal_lahir = mysqli_real_escape_string($koneksi, $data['tanggal_lahir']);
+    $jenis_kelamin = mysqli_real_escape_string($koneksi, $data['jenis_kelamin']);
+    $email = mysqli_real_escape_string($koneksi, $data['email']);
+
+    // Jika password diberikan, maka hash password dan update
+    $password = isset($data['password']) ? password_hash($data['password'], PASSWORD_BCRYPT) : null;
+
+    // Jika password ada, update password juga
+    if ($password) {
+        $sql = "UPDATE pegawai 
+                SET nama = ?, tanggal_lahir = ?, jenis_kelamin = ?, email = ?, password = ? 
+                WHERE id_pegawai = ?";
+        // Mempersiapkan statement
+        $stmt = mysqli_prepare($koneksi, $sql);
+        // Mengikat parameter ke statement
+        mysqli_stmt_bind_param($stmt, "sssssi", $nama, $tanggal_lahir, $jenis_kelamin, $email, $password, $id_pegawai);
+    } else {
+        $sql = "UPDATE pegawai 
+                SET nama = ?, tanggal_lahir = ?, jenis_kelamin = ?, email = ? 
+                WHERE id_pegawai = ?";
+        // Mempersiapkan statement
+        $stmt = mysqli_prepare($koneksi, $sql);
+        // Mengikat parameter ke statement tanpa password
+        mysqli_stmt_bind_param($stmt, "ssssi", $nama, $tanggal_lahir, $jenis_kelamin, $email, $id_pegawai);
+    }
+
+    // Menjalankan statement
+    if (mysqli_stmt_execute($stmt)) {
+        echo json_encode(["status" => "success", "message" => "Pegawai updated successfully"]);
+    } else {
+        echo json_encode(["status" => "error", "message" => "Failed to update pegawai"]);
+    }
+
+    // Menutup prepared statement
+    mysqli_stmt_close($stmt);
+}
+
+function deletePegawai() {
+    global $koneksi;
+
+    // Mengambil data dari input JSON
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    // Validasi input
+    if (empty($data['id_pegawai'])) {
+        echo json_encode(["status" => "error", "message" => "id_pegawai is required"]);
+        return;
+    }
+
+    // Mengamankan data input
+    $id_pegawai = mysqli_real_escape_string($koneksi, $data['id_pegawai']);
+
+    // Query untuk menghapus pegawai berdasarkan id_pegawai
+    $sql = "DELETE FROM pegawai WHERE id_pegawai = ?";
+
+    // Mempersiapkan statement
+    $stmt = mysqli_prepare($koneksi, $sql);
+
+    // Mengikat parameter ke statement
+    mysqli_stmt_bind_param($stmt, "i", $id_pegawai);
+
+    // Menjalankan query
+    if (mysqli_stmt_execute($stmt)) {
+        echo json_encode(["status" => "success", "message" => "Pegawai deleted successfully"]);
+    } else {
+        echo json_encode(["status" => "error", "message" => "Failed to delete pegawai"]);
+    }
+
+    // Menutup prepared statement
+    mysqli_stmt_close($stmt);
+}
+
 
 
 
