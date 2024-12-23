@@ -16,7 +16,9 @@ import SettingsScreen from './src/screens/SettingsScreen';
 import PegawaiScreen from './src/screens/PegawaiScreen';
 import PelayananScreen from './src/screens/PelayananScreen';
 import PemesananScreen from './src/screens/PemesananScreen';
+import PemesananClientScreen from './src/screens/PemesananClientScreen';
 import CrudPegawai from './src/screens/CrudPegawai';
+import BuatPesananScreen from './src/screens/BuatPesananScreen'; // Import BuatPesananScreen
 
 const Stack = createNativeStackNavigator();
 
@@ -61,7 +63,9 @@ const App = () => {
         <Stack.Screen name="PegawaiScreen" component={PegawaiScreen} />
         <Stack.Screen name="Pelayanan" component={PelayananScreen} />
         <Stack.Screen name="Pemesanan" component={PemesananScreen} />
+        <Stack.Screen name="PemesananClient" component={PemesananClientScreen} />
         <Stack.Screen name="CrudPegawai" component={CrudPegawai} />
+        <Stack.Screen name="BuatPesanan" component={BuatPesananScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

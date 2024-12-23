@@ -67,6 +67,12 @@ const HomeScreen = ({ navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.navItem}
+          onPress={() => navigation.navigate('PemesananClient')} // Navigasi ke halaman Pemesanan
+        >
+          <Text style={styles.navText}>Pemesanan</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.navItem}
           onPress={() => navigation.navigate('ProfileScreen')} // Navigasi ke halaman Login
         >
           <Text style={styles.navText}>Profile</Text>

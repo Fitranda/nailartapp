@@ -17,7 +17,7 @@ const DashboardStack = () => (
     <Stack.Screen name="Dashboard" component={DashboardScreen} />
     <Stack.Screen name="Pegawai" component={PegawaiScreen} />
     <Stack.Screen name="Pelayanan" component={PelayananScreen} />
-    <Stack.Screen name="Pemesanan" component={PemesananScreen} />
+    {/* <Stack.Screen name="Pemesanan" component={PemesananScreen} /> */}
   </Stack.Navigator>
 );
 

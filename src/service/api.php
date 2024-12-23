@@ -42,6 +42,14 @@ switch($op) {
     case 'createPegawai': createPegawai(); break;
     case 'updatePegawai': updatePegawai(); break;
     case 'deletePegawai': deletePegawai(); break;
+    case 'getOrders': getOrders(); break;
+    case 'createOrder': createOrder(); break;
+    case 'deleteOrder': deleteOrder(); break;
+    case 'cancelOrder': cancelOrder(); break;
+    case 'completeOrder': completeOrder(); break;
+    case 'getUserOrders': getUserOrders(); break;
+    case 'getUserOrdersByDate': getUserOrdersByDate(); break;
+    case 'getOrdersByDate': getOrdersByDate(); break;
     default: normal(); break;
 }
 
@@ -771,6 +779,160 @@ function deletePegawai() {
 
     // Menutup prepared statement
     mysqli_stmt_close($stmt);
+}
+
+// Get all orders
+function getOrders() {
+    global $koneksi;
+    $sql = "SELECT * FROM bookings";
+    $result = mysqli_query($koneksi, $sql);
+    $orders = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $orders[] = $row;
+    }
+    echo json_encode(['data' => $orders]);
+}
+
+// Create a new order
+function createOrder() {
+    global $koneksi;
+    $data = json_decode(file_get_contents("php://input"), true);
+    $id_layanan = $data['service'];
+    $tanggal = $data['date'];
+    $waktu = $data['time'];
+    $id_user = $data['user_id'];
+
+    if ($id_layanan && $tanggal && $waktu && $id_user) {
+        $sql = "INSERT INTO bookings (id_layanan, tanggal, waktu, id_user, status) 
+                VALUES ('$id_layanan', '$tanggal', '$waktu', '$id_user', 'dipesan')";
+        $result = mysqli_query($koneksi, $sql);
+        $message = $result ? 'Order created successfully' : 'Failed to create order';
+        echo json_encode(['success' => true,'message' => $message]);
+    } else {
+        $message = 'Missing required fields';
+        echo json_encode(['message' => $message]);
+    }
+}
+
+function deleteOrder() {
+    global $koneksi;
+    $id_booking = $_GET['id_booking'];
+    $sql = "DELETE FROM bookings WHERE id_booking = ?";
+    $stmt = $koneksi->prepare($sql);
+    $stmt->bind_param("i", $id_booking);
+    if ($stmt->execute()) {
+        echo json_encode(['status' => 'success', 'message' => 'Order deleted successfully']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Failed to delete order']);
+    }
+}
+
+function cancelOrder() {
+    global $koneksi;
+    $data = json_decode(file_get_contents("php://input"), true);
+    $id_booking = $data['id_booking'] ?? null;
+
+    if (!$id_booking) {
+        echo json_encode(['status' => 'error', 'message' => 'ID booking is required']);
+        return;
+    }
+
+    $sql = "UPDATE bookings SET status = 'batal' WHERE id_pemesanan = ?";
+    $stmt = $koneksi->prepare($sql);
+    $stmt->bind_param("i", $id_booking);
+    if ($stmt->execute()) {
+        echo json_encode(['status' => 'success', 'message' => 'Order canceled successfully']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Failed to cancel order']);
+    }
+}
+
+function completeOrder() {
+    global $koneksi;
+    $data = json_decode(file_get_contents("php://input"), true);
+    $id_booking = $data['id_booking'] ?? null;
+
+    if (!$id_booking) {
+        echo json_encode(['status' => 'error', 'message' => 'ID booking is required']);
+        return;
+    }
+
+    $sql = "UPDATE bookings SET status = 'selesai' WHERE id_pemesanan = ?";
+    $stmt = $koneksi->prepare($sql);
+    $stmt->bind_param("i", $id_booking);
+    if ($stmt->execute()) {
+        echo json_encode(['status' => 'success', 'message' => 'Order completed successfully']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Failed to complete order']);
+    }
+}
+
+// Get orders for a specific user
+function getUserOrders() {
+    global $koneksi;
+    $data = json_decode(file_get_contents("php://input"), true);
+    $id_user = $data['id_user'] ?? null;
+
+    if (!$id_user) {
+        echo json_encode(['status' => 'error', 'message' => 'ID user is required']);
+        return;
+    }
+
+    $sql = "SELECT * FROM bookings WHERE id_user = ?";
+    $stmt = $koneksi->prepare($sql);
+    $stmt->bind_param("i", $id_user);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $orders = [];
+    while ($row = $result->fetch_assoc()) {
+        $orders[] = $row;
+    }
+    echo json_encode(['data' => $orders]);
+}
+
+// Get orders for a specific user on a specific date
+function getUserOrdersByDate() {
+    global $koneksi;
+    $data = json_decode(file_get_contents("php://input"), true);
+    $id_user = $data['id_user'] ?? null;
+    $date = $data['date'] ?? null;
+
+    if (!$id_user || !$date) {
+        echo json_encode(['status' => 'error', 'message' => 'ID user and date are required']);
+        return;
+    }
+
+    $sql = "SELECT * FROM bookings WHERE id_user = ? AND tanggal = ?";
+    $stmt = $koneksi->prepare($sql);
+    $stmt->bind_param("is", $id_user, $date);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $orders = [];
+    while ($row = $result->fetch_assoc()) {
+        $orders[] = $row;
+    }
+    echo json_encode(['data' => $orders]);
+}
+
+function getOrdersByDate() {
+    global $koneksi;
+    $date = $_GET['date'] ?? null;
+
+    if (!$date) {
+        echo json_encode(['status' => 'error', 'message' => 'Date is required']);
+        return;
+    }
+
+    $sql = "SELECT * FROM bookings WHERE tanggal = ?";
+    $stmt = $koneksi->prepare($sql);
+    $stmt->bind_param("s", $date);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $orders = [];
+    while ($row = $result->fetch_assoc()) {
+        $orders[] = $row;
+    }
+    echo json_encode(['data' => $orders]);
 }
 
 

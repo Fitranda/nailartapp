@@ -69,6 +69,7 @@ const LoginScreen = ({ navigation }) => {
 
       if (data.status === 'success') {
         await AsyncStorage.setItem('user', JSON.stringify(data.data));
+        await AsyncStorage.setItem('userId', data.data.id_user.toString());
         // Cek role dan navigasi berdasarkan role
         if (data.data.role == 'admin') {
           console.log('Navigating to Navigation');
