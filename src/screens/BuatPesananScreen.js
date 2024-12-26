@@ -121,7 +121,7 @@ const BuatPesananScreen = ({ navigation }) => {
       <Text style={styles.selectedText}>Waktu Mulai Terpilih: {selectedTime.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</Text>
       
       <View style={styles.buttonContainer}>
-        <Button title="Submit" onPress={handleSubmit} color="#5c6bc0" />
+        <Button title="Submit" onPress={handleSubmit} color="#DA7297" />
       </View>
       
       <View style={styles.buttonContainer}>
@@ -129,7 +129,7 @@ const BuatPesananScreen = ({ navigation }) => {
         <Button
           title="Kembali"
           onPress={() => navigation.goBack()}
-          color="#757575"
+          color="#eeacbf"
         />
       </View>
     </View>

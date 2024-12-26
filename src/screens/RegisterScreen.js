@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
   },
   link: {
     marginTop: 20,
-    color: '#007bff',
+    color: '#DA7297',
   },
   error: {
     color: 'red',

@@ -6,30 +6,30 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 const CrudPegawai = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { formData, isEditing } = route.params || {}; // Jika tidak ada data, gunakan objek kosong
+  const { formData, isEditing } = route.params || {}; // If no data, use empty object
 
   const [form, setForm] = React.useState(formData || {
     id_pegawai: '',
     nama: '',
-    tanggal_lahir: '',
+    tanggal_lahir: '', // Use string for the date input
     jenis_kelamin: '',
     email: '',
     password: '',
   });
 
-  // Fungsi untuk menghandle pengiriman form
+  // Function to handle form submission
   const handleSubmit = async () => {
     const operation = isEditing ? 'updatePegawai' : 'createPegawai';
-    const apiUrl = 'http://${global.myApi}/nailartapp/src/service/api.php';
+    const apiUrl = `http://${global.myApi}/nailartapp/src/service/api.php`; // Fix the URL formatting
 
-    // Validasi input form
+    // Form validation
     if (!form.nama || !form.tanggal_lahir || !form.jenis_kelamin || !form.email || !form.password) {
       Alert.alert('Error', 'Semua bidang harus diisi.');
       return;
     }
 
     try {
-      // Kirim data ke API
+      // Send data to the API
       const response = await fetch(`${apiUrl}?op=${operation}`, {
         method: 'POST',
         headers: {
@@ -41,23 +41,23 @@ const CrudPegawai = () => {
       const json = await response.json();
 
       if (json.success) {
-        Alert.alert('Berhasil', `Pegawai berhasil ${isEditing ? 'diedit' : 'ditambahkan'}.`, [
-          { text: 'OK', onPress: () => navigation.navigate('PegawaiScreen') },
+        Alert.alert('Gagal', `Pegawai gagal ${isEditing ? 'diedit' : 'ditambahkan'}.`, [
+          { text: 'OK' },
         ]);
       } else {
         Alert.alert('Berhasil', `Pegawai berhasil ${isEditing ? 'diedit' : 'ditambahkan'}.`, [
           { text: 'OK', onPress: () => navigation.navigate('PegawaiScreen') },
         ]);
+       
       }
     } catch (error) {
       console.error('Error submitting pegawai:', error);
-      Alert.alert('Error', 'Terjadi kesalahan. Silakan coba lagi.');
+      Alert.alert('Error', `Terjadi kesalahan: ${error.message}`);
     }
   };
 
   return (
     <View style={styles.container}>
-      
       {/* Header */}
       <View style={styles.header}>
         <Icon name="user-plus" size={30} color="#fff" />
@@ -72,12 +72,15 @@ const CrudPegawai = () => {
           value={form.nama}
           onChangeText={(text) => setForm({ ...form, nama: text })}
         />
+
+        {/* TextInput for Tanggal Lahir */}
         <TextInput
           style={styles.input}
-          placeholder="Tanggal Lahir"
-          value={form.tanggal_lahir}
+          placeholder="Tanggal Lahir (YYYY-MM-DD)"
+          value={form.tanggal_lahir} // Display as string
           onChangeText={(text) => setForm({ ...form, tanggal_lahir: text })}
         />
+
         <TextInput
           style={styles.input}
           placeholder="Jenis Kelamin"
@@ -98,7 +101,7 @@ const CrudPegawai = () => {
           secureTextEntry
         />
 
-        {/* TouchableOpacity as the submit button */}
+        {/* Submit Button */}
         <TouchableOpacity
           style={styles.submitButton}
           onPress={handleSubmit}
@@ -107,10 +110,10 @@ const CrudPegawai = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Tombol kembali ke daftar pegawai */}
+      {/* Back Button */}
       <TouchableOpacity
         style={styles.backButton}
-        onPress={() => navigation.navigate('PegawaiScreen')} // Navigasi kembali ke PegawaiScreen
+        onPress={() => navigation.navigate('PegawaiScreen')} // Navigate back to PegawaiScreen
       >
         <Text style={styles.buttonText}>Kembali ke Daftar Pegawai</Text>
       </TouchableOpacity>
@@ -124,7 +127,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f7f7f7',
   },
   header: {
-    backgroundColor: '#eeacbf', // Background header dengan warna custom
+    backgroundColor: '#eeacbf',
     paddingVertical: 20,
     alignItems: 'center',
     justifyContent: 'center',
@@ -156,14 +159,13 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   submitButton: {
-  backgroundColor: '#DA7297', // Background pink untuk tombol
-  padding: 12,
-  marginTop: 20,
-  borderRadius: 5,
-  alignItems: 'center',
-  marginHorizontal: 15,
-},
-
+    backgroundColor: '#DA7297',
+    padding: 12,
+    marginTop: 20,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginHorizontal: 15,
+  },
   backButton: {
     backgroundColor: '#eeacbf',
     padding: 10,

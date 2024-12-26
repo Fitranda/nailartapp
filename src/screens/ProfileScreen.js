@@ -1,27 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Button, Alert, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import '../global';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const ProfileScreen = () => {
-  const [users, setUsers] = useState([]);
+  const [user, setUser] = useState(null);
   const navigation = useNavigation();
 
+  // Fetch user data from AsyncStorage
   useEffect(() => {
-    fetchUsers();
+    const getUserInfo = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem('user');
+        if (storedUser) {
+          const userData = JSON.parse(storedUser);
+          console.log('User data:', userData); // Log untuk memeriksa data
+          setUser(userData);
+        }
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    };
+
+    getUserInfo();
   }, []);
 
-  const fetchUsers = async () => {
-    try {
-      const response = await fetch(`http://${global.myApi}/nailartapp/src/service/api.php?op=getUsers`);
-      const data = await response.json();
-      setUsers(data.data);
-    } catch (error) {
-      console.error('Error fetching users:', error);
-    }
-  };
-
+  // Handle logout
   const handleLogout = async () => {
     try {
       await AsyncStorage.removeItem('user');
@@ -33,25 +38,29 @@ const ProfileScreen = () => {
     }
   };
 
+  // Show loading state if user data is not available yet
+  if (!user) {
+    return <Text>Loading...</Text>;
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Profile</Text>
-      <FlatList
-        data={users}
-        keyExtractor={(item) => item.id_user.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.userItem}>
-            <Text style={styles.userText}>Name: {item.nama}</Text>
-            <Text style={styles.userText}>Email: {item.email}</Text>
-            <Text style={styles.userText}>Phone: {item.telepon}</Text>
-            <Text style={styles.userText}>Address: {item.alamat}</Text>
-            <Text style={styles.userText}>Role: {item.role}</Text>
-          </View>
-        )}
-      />
+
+      {/* User Info */}
+      <View style={styles.userItem}>
+        <Text style={styles.userText}>Name: {user.nama || 'Data tidak tersedia'}</Text>
+        <Text style={styles.userText}>Email: {user.email || 'Data tidak tersedia'}</Text>
+        <Text style={styles.userText}>Telepon: {user.telepon || 'Data tidak tersedia'}</Text>
+        <Text style={styles.userText}>Alamat: {user.alamat || 'Data tidak tersedia'}</Text>
+      </View>
+
+      {/* Logout Button */}
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.logoutButtonText}>Logout</Text>
       </TouchableOpacity>
+
+
     </View>
   );
 };
@@ -59,9 +68,10 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    backgroundColor: '#f5f5f5',
   },
   title: {
     fontSize: 28,
@@ -80,6 +90,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     marginBottom: 20,
     width: '100%',
+    maxWidth: 400,
   },
   userText: {
     fontSize: 16,
@@ -87,16 +98,18 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   logoutButton: {
-    backgroundColor: '#d4af37', // Gold color
+    backgroundColor: '#DA7297', 
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
+    marginBottom: 20,
   },
   logoutButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },
+  
 });
 
 export default ProfileScreen;

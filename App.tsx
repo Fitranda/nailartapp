@@ -18,19 +18,24 @@ import PelayananScreen from './src/screens/PelayananScreen';
 import PemesananScreen from './src/screens/PemesananScreen';
 import PemesananClientScreen from './src/screens/PemesananClientScreen';
 import CrudPegawai from './src/screens/CrudPegawai';
-import BuatPesananScreen from './src/screens/BuatPesananScreen'; // Import BuatPesananScreen
+import BuatPesananScreen from './src/screens/BuatPesananScreen';
+import SplashScreen from './src/screens/SplashScreen';
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(null); // Track login status
+  const [showSplash, setShowSplash] = useState(true); // Track SplashScreen visibility
 
   useEffect(() => {
-    const checkLoginStatus = async () => {
+    const initApp = async () => {
+      // Simulate SplashScreen for 3 seconds
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      setShowSplash(false); // Hide SplashScreen
+
       try {
         const user = await AsyncStorage.getItem('user');
         if (user) {
-          const parsedUser = JSON.parse(user);
           setIsAuthenticated(true); // User is logged in
         } else {
           setIsAuthenticated(false); // User is not logged in
@@ -41,16 +46,19 @@ const App = () => {
       }
     };
 
-    checkLoginStatus();
+    initApp();
   }, []);
 
-  if (isAuthenticated === null) {
-    return null; // Show nothing while checking login status
+  if (showSplash) {
+    return <SplashScreen />;
   }
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={isAuthenticated ? "HomeScreen" : "Login"} screenOptions={{ headerShown: false }}>
+      <Stack.Navigator
+        initialRouteName={isAuthenticated ? 'HomeScreen' : 'Login'}
+        screenOptions={{ headerShown: false }}
+      >
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name="NailArt" component={NailArt} />
         <Stack.Screen name="Login" component={LoginScreen} />

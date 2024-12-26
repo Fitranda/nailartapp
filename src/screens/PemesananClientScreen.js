@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Button, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const PemesananClientScreen = ({ navigation }) => {
   const [orders, setOrders] = useState([]);
@@ -151,17 +152,11 @@ const PemesananClientScreen = ({ navigation }) => {
         <Button
           title="Buat Pesanan Baru"
           onPress={() => navigation.navigate('BuatPesanan')}
-          color="#5c6bc0"
+          color="#DA7297"
         />
       </View>
 
-      <View style={styles.buttonContainer}>
-        <Button
-          title="Kembali"
-          onPress={() => navigation.goBack()}
-          color="#757575"
-        />
-      </View>
+      
 
       <FlatList
         data={orders}
@@ -184,6 +179,22 @@ const PemesananClientScreen = ({ navigation }) => {
           </View>
         )}
       />
+      
+      {/* Bottom Navigation */}
+           <View style={styles.bottomNav}>
+             <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('HomeScreen')}>
+               <Icon name="home" size={30} color="#fff" />
+             </TouchableOpacity>
+             <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('NailArt')}>
+               <Icon name="brush" size={30} color="#fff" />
+             </TouchableOpacity>
+             <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('PemesananClient')}>
+               <Icon name="shopping-cart" size={30} color="#fff" />
+             </TouchableOpacity>
+             <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ProfileScreen')}>
+               <Icon name="person" size={30} color="#fff" />
+             </TouchableOpacity>
+           </View>
     </View>
   );
 };
@@ -218,7 +229,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   backButton: {
-    marginBottom: 20,
+    marginTop: 20,
+    backgroundColor: '#eeacbf',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginHorizontal: 15,
+  },
+  backButtonText: {
+    fontSize: 16,
+    color: 'white',
   },
   cancelButton: {
     marginTop: 10,
@@ -260,6 +280,24 @@ const styles = StyleSheet.create({
   statusCompleted: {
     color: 'green',
   },
+  // Styling untuk Bottom Navigation
+  bottomNav: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    paddingVertical: 10,
+    backgroundColor: '#eeacbf',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  navItem: {
+    flex: 1,
+    alignItems: 'center',
+  },
 });
+
+
 
 export default PemesananClientScreen;

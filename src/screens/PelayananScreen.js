@@ -148,13 +148,17 @@ const PelayananScreen = () => {
         </View>
       )}
       {!showForm && (
-        <Button title="Tambah Baru" onPress={() => setShowForm(true)} />
+        <Button
+          title="Tambah Baru"
+          onPress={() => setShowForm(true)}
+          color="#DA7297" // Menambahkan warna latar belakang yang sama dengan action button
+          style={styles.tambahBaruButton} // Menambahkan gaya kustom jika diperlukan
+        />
       )}
       <FlatList
         data={services}
         keyExtractor={(item) => item.id_layanan.toString()}
         renderItem={({ item }) => (
-          console.log(`http://${global.myApi}/nailartapp/src/service/uploads/${item.gambar}`),
           <View style={styles.serviceItem}>
             <Image
               source={{ uri: `http://${global.myApi}/nailartapp/src/service/uploads/${item.gambar}` }}
@@ -183,89 +187,96 @@ const PelayananScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      padding: 20,
-    },
-    title: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      marginBottom: 20,
-      textAlign: 'center',
-    },
-    form: {
-      marginBottom: 20,
-    },
-    input: {
-      width: '100%',
-      height: 40,
-      borderColor: '#ddd',
-      borderWidth: 1,
-      marginBottom: 10,
-      paddingHorizontal: 10,
-      borderRadius: 5,
-    },
-    uploadButton: {
-      backgroundColor: '#007bff',
-      padding: 10,
-      borderRadius: 5,
-      alignItems: 'center',
-      marginBottom: 10,
-    },
-    uploadButtonText: {
-      color: '#fff',
-      fontSize: 16,
-    },
-    previewImage: {
-      width: 100,
-      height: 100,
-      marginBottom: 10,
-    },
-    buttonRow: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-    },
-    serviceItem: {
-      padding: 10,
-      borderBottomWidth: 1,
-      borderBottomColor: '#ddd',
-      marginBottom: 10,
-    },
-    serviceImage: {
-      width: '100%',
-      height: 200,
-      resizeMode: 'cover',
-      marginBottom: 10,
-    },
-    serviceDetails: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      marginBottom: 10,
-    },
-    serviceText: {
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-    serviceDescription: {
-      fontSize: 14,
-      marginBottom: 10,
-    },
-    serviceActions: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-    },
-    actionButton: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: '#007bff',
-      padding: 10,
-      borderRadius: 5,
-      marginRight: 10,
-    },
-    actionButtonText: {
-      color: '#fff',
-      marginLeft: 5,
-    },
-  });
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  form: {
+    marginBottom: 20,
+  },
+  input: {
+    width: '100%',
+    height: 40,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+  },
+  uploadButton: {
+    backgroundColor: '#DA7297',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  uploadButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  previewImage: {
+    width: 100,
+    height: 100,
+    marginBottom: 10,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  serviceItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    marginBottom: 10,
+  },
+  serviceImage: {
+    width: '100%',
+    height: 200,
+    resizeMode: 'cover',
+    marginBottom: 10,
+  },
+  serviceDetails: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  serviceText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  serviceDescription: {
+    fontSize: 14,
+    marginBottom: 10,
+  },
+  serviceActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  actionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#DA7297',
+    padding: 10,
+    borderRadius: 5,
+    marginRight: 10,
+  },
+  actionButtonText: {
+    color: '#fff',
+    marginLeft: 5,
+  },
+  tambahBaruButton: {
+    backgroundColor: '#DA7297', 
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 20,
+    alignItems: 'center',
+  }
+});
 
 export default PelayananScreen;

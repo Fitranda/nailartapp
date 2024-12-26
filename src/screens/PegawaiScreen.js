@@ -5,12 +5,19 @@ import { useNavigation } from '@react-navigation/native';
 
 const PegawaiScreen = () => {
   const [pegawai, setPegawai] = useState([]);
-  const apiUrl = 'http://${global.myApi}/nailartapp/src/service/api.php';
+  const apiUrl = `http://${global.myApi}/nailartapp/src/service/api.php`; // Make sure global.myApi is set correctly
   const navigation = useNavigation();
 
+  // Function to fetch pegawai data
   const fetchPegawai = async () => {
     try {
       const response = await fetch(`${apiUrl}?op=getPegawai`);
+      
+      // Check if the response is okay (status code 200)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const json = await response.json();
       if (json.data) {
         setPegawai(json.data);
@@ -23,28 +30,30 @@ const PegawaiScreen = () => {
     }
   };
 
+  // Fetch pegawai data on component mount
   useEffect(() => {
     fetchPegawai();
   }, []);
 
+  // Navigate to the form for adding new pegawai
   const handleAddPegawai = () => {
     navigation.navigate('CrudPegawai', { isEditing: false });
   };
 
-  // Menambahkan handleEdit untuk mengedit pegawai
+  // Navigate to the form for editing an existing pegawai
   const handleEdit = (pegawai) => {
     navigation.navigate('CrudPegawai', {
       isEditing: true,
-      formData: pegawai, // Mengirimkan data pegawai yang akan diedit
+      formData: pegawai, // Send pegawai data to be edited
     });
   };
 
-  // Function for navigating back to the Dashboard
+  // Function to navigate back to the Dashboard
   const handleBackToDashboard = () => {
-    navigation.navigate('DashboardScreen');  // Use the correct screen name
+    navigation.navigate('DashboardScreen');  // Make sure this is the correct screen name
   };
 
-  // Function to delete pegawai
+  // Function to delete a pegawai
   const deletePegawai = async (id) => {
     try {
       const response = await fetch(`${apiUrl}?op=deletePegawai`, {
@@ -77,7 +86,14 @@ const PegawaiScreen = () => {
         </View>
 
         {/* Back to Dashboard Button */}
-        
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={handleBackToDashboard}
+        >
+          <Text style={styles.backButtonText}>
+            <Icon name="arrow-left" size={18} color="#fff" style={styles.icon} /> Kembali ke Dashboard
+          </Text>
+        </TouchableOpacity>
 
         {/* Add Pegawai Button */}
         <TouchableOpacity
@@ -99,7 +115,7 @@ const PegawaiScreen = () => {
               <View style={styles.actions}>
                 <TouchableOpacity
                   style={styles.editButton}
-                  onPress={() => handleEdit(item)} // Panggil handleEdit saat tombol Edit diklik
+                  onPress={() => handleEdit(item)} // Edit the pegawai when clicked
                 >
                   <Text style={styles.buttonText}>
                     <Icon name="edit" size={18} color="#fff" /> Edit
@@ -113,21 +129,10 @@ const PegawaiScreen = () => {
                     <Icon name="trash" size={18} color="#fff" /> Delete
                   </Text>
                 </TouchableOpacity>
-
-      
               </View>
-              
             </View>
           ))}
         </View>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={handleBackToDashboard}
-        >
-          <Text style={styles.backButtonText}>
-            <Icon name="arrow-left" size={18} color="#fff" style={styles.icon} /> Kembali ke Dashboard
-          </Text>
-        </TouchableOpacity>
       </ScrollView>
     </View>
   );

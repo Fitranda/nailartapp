@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import '../global';
 
 const NailArt = ({ navigation }) => {
@@ -39,31 +40,42 @@ const NailArt = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Layanan Nail Art</Text>
+      <ScrollView contentContainerStyle={styles.content}>
+        <Text style={styles.title}>Layanan Nail Art</Text>
 
-      {/* Tombol kembali ke Home */}
-      <TouchableOpacity 
-        style={styles.backButton}
-        onPress={() => navigation.goBack()} // Fungsi untuk kembali ke screen sebelumnya
-      >
-        <Text style={styles.backButtonText}>Kembali ke Home</Text>
-      </TouchableOpacity>
+        <FlatList
+          data={services}
+          keyExtractor={(item) => item.id_layanan.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.serviceItem}>
+              <Image
+                style={styles.image}
+                source={renderImage(item.gambar)} // Menggunakan fungsi renderImage untuk menangani path gambar
+              />
+              <Text style={styles.serviceName}>{item.nama_layanan}</Text>
+              <Text style={styles.description}>{item.deskripsi}</Text>
+              <Text style={styles.price}>Rp {item.harga}</Text>
+            </View>
+          )}
+        />
+      </ScrollView>
 
-      <FlatList
-        data={services}
-        keyExtractor={(item) => item.id_layanan.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.serviceItem}>
-            <Image
-              style={styles.image}
-              source={renderImage(item.gambar)} // Menggunakan fungsi renderImage untuk menangani path gambar
-            />
-            <Text style={styles.serviceName}>{item.nama_layanan}</Text>
-            <Text style={styles.description}>{item.deskripsi}</Text>
-            <Text style={styles.price}>Rp {item.harga}</Text>
-          </View>
-        )}
-      />
+
+      {/* Bottom Navigation */}
+      <View style={styles.bottomNav}>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('HomeScreen')}>
+          <Icon name="home" size={30} color="#fff" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('NailArt')}>
+          <Icon name="brush" size={30} color="#fff" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('PemesananClient')}>
+          <Icon name="shopping-cart" size={30} color="#fff" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('ProfileScreen')}>
+          <Icon name="person" size={30} color="#fff" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -71,55 +83,76 @@ const NailArt = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
     backgroundColor: '#fff',
   },
-  header: {
+  content: {
+    padding: 15,
+  },
+  title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
     textAlign: 'center',
-  },
-  backButton: {
-    backgroundColor: '#6200ee',
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-    borderRadius: 5,
+    color: '#e91e63',
     marginBottom: 20,
-    alignSelf: 'center',
-  },
-  backButtonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '500',
   },
   serviceItem: {
     marginBottom: 20,
     borderWidth: 1,
     borderColor: '#ccc',
-    padding: 10,
+    padding: 15,
     borderRadius: 5,
+    backgroundColor: '#f8f8f8',
   },
   image: {
     width: '100%',
     height: 200,
     borderRadius: 5,
+    marginBottom: 10,
   },
   serviceName: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginTop: 10,
+    color: '#e91e63',
+    textAlign: 'center',
   },
   description: {
     fontSize: 14,
     marginTop: 5,
     color: '#555',
+    textAlign: 'center',
   },
   price: {
     fontSize: 16,
     fontWeight: 'bold',
     marginTop: 10,
     color: '#d9534f',
+    textAlign: 'center',
+  },
+  backButton: {
+    backgroundColor: '#DA7297',
+    padding: 10,
+    marginTop: 20,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginHorizontal: 15,
+  },
+  backButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '500',
+  },
+  bottomNav: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#eeacbf',
+    height: 60,
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
+  },
+  navItem: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
