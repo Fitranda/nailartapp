@@ -1,1 +1,1 @@
-global.myApi = "192.168.151.47";
+global.myApi = "192.168.1.74";

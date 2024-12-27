@@ -85,15 +85,6 @@ const PegawaiScreen = () => {
           <Text style={styles.headerText}>Pengelolaan Data Pegawai</Text>
         </View>
 
-        {/* Back to Dashboard Button */}
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={handleBackToDashboard}
-        >
-          <Text style={styles.backButtonText}>
-            <Icon name="arrow-left" size={18} color="#fff" style={styles.icon} /> Kembali ke Dashboard
-          </Text>
-        </TouchableOpacity>
 
         {/* Add Pegawai Button */}
         <TouchableOpacity
@@ -161,20 +152,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 22,
     fontWeight: 'bold',
-  },
-  backButton: {
-    backgroundColor: '#DA7297',
-    padding: 15,
-    borderRadius: 5,
-    margin: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  backButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    textAlign: 'center',
-    marginLeft: 5,
   },
   addButton: {
     backgroundColor: '#DA7297',

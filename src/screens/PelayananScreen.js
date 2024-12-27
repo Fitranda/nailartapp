@@ -108,6 +108,7 @@ const PelayananScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Pelayanan</Text>
+      
       {showForm && (
         <View style={styles.form}>
           <TextInput
@@ -181,6 +182,7 @@ const PelayananScreen = () => {
             </View>
           </View>
         )}
+        
       />
     </View>
   );
@@ -276,7 +278,19 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 20,
     alignItems: 'center',
-  }
+  },
+  backButton: {
+    backgroundColor: '#DA7297',
+    padding: 15,
+    borderRadius: 5,
+    margin: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  backButtonText: {
+    fontSize: 16,
+    color: '#fff',
+  },
 });
 
 export default PelayananScreen;

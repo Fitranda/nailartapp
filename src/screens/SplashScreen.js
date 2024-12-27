@@ -1,11 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Image, StyleSheet } from 'react-native';
 
 const SplashScreen = () => {
   return (
     <View style={styles.container}>
-      <ActivityIndicator size="large" color="#0000ff" />
-      <Text style={styles.text}>Loading...</Text>
+      <Image 
+        source={require('../service/uploads/logo.png.png')} // Ganti dengan path logo Anda
+        style={styles.logo}
+      />
     </View>
   );
 };
@@ -15,12 +17,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#ffe7f1',
   },
-  text: {
-    marginTop: 20,
-    fontSize: 18,
-    color: '#333',
+  logo: {
+    width: 150, // Sesuaikan ukuran logo
+    height: 150, // Sesuaikan ukuran logo
   },
 });
 

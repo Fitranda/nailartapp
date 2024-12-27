@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const ProfileScreen = () => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
   // Fetch user data from AsyncStorage
@@ -17,9 +17,13 @@ const ProfileScreen = () => {
           const userData = JSON.parse(storedUser);
           console.log('User data:', userData); // Log untuk memeriksa data
           setUser(userData);
+        } else {
+          console.warn('User data not found');
         }
       } catch (error) {
         console.error('Error fetching user info:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -38,9 +42,14 @@ const ProfileScreen = () => {
     }
   };
 
-  // Show loading state if user data is not available yet
-  if (!user) {
-    return <Text>Loading...</Text>;
+  // Show loading state while fetching user data
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#DA7297" />
+        <Text>Loading...</Text>
+      </View>
+    );
   }
 
   return (
@@ -49,18 +58,14 @@ const ProfileScreen = () => {
 
       {/* User Info */}
       <View style={styles.userItem}>
-        <Text style={styles.userText}>Name: {user.nama || 'Data tidak tersedia'}</Text>
-        <Text style={styles.userText}>Email: {user.email || 'Data tidak tersedia'}</Text>
-        <Text style={styles.userText}>Telepon: {user.telepon || 'Data tidak tersedia'}</Text>
-        <Text style={styles.userText}>Alamat: {user.alamat || 'Data tidak tersedia'}</Text>
+        <Text style={styles.userText}>Name: {user?.nama || 'Data tidak tersedia'}</Text>
+        <Text style={styles.userText}>Email: {user?.email || 'Data tidak tersedia'}</Text>
       </View>
 
       {/* Logout Button */}
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.logoutButtonText}>Logout</Text>
       </TouchableOpacity>
-
-
     </View>
   );
 };
@@ -98,7 +103,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   logoutButton: {
-    backgroundColor: '#DA7297', 
+    backgroundColor: '#DA7297',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
@@ -109,7 +114,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+  },
 });
 
 export default ProfileScreen;

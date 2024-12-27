@@ -3,7 +3,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import DashboardScreen from './DashboardScreen';
-import SettingsScreen from './SettingsScreen';
 import ProfileScreen from './ProfileScreen';
 import PegawaiScreen from './PegawaiScreen';
 import PelayananScreen from './PelayananScreen';
@@ -15,15 +14,9 @@ const Stack = createNativeStackNavigator();
 const DashboardStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="Dashboard" component={DashboardScreen} />
-    <Stack.Screen name="Pegawai" component={PegawaiScreen} />
+    <Stack.Screen name="PegawaiScreen" component={PegawaiScreen} />
     <Stack.Screen name="Pelayanan" component={PelayananScreen} />
-    {/* <Stack.Screen name="Pemesanan" component={PemesananScreen} /> */}
-  </Stack.Navigator>
-);
-
-const SettingsStack = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="Settings" component={SettingsScreen} />
+    <Stack.Screen name="Pemesanan" component={PemesananScreen} />
   </Stack.Navigator>
 );
 
@@ -43,14 +36,13 @@ const Navigasi = () => {
 
           if (route.name === 'Dashboard') {
             iconName = 'view-dashboard';
-          } else if (route.name === 'Settings') {
-            iconName = 'cog';
           } else if (route.name === 'Profile') {
             iconName = 'account';
           }
 
           return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
         },
+        headerShown: false, // Tambahkan baris ini untuk menonaktifkan header di tab bar
       })}
       tabBarOptions={{
         activeTintColor: 'tomato',
@@ -58,7 +50,6 @@ const Navigasi = () => {
       }}
     >
       <Tab.Screen name="Dashboard" component={DashboardStack} />
-      <Tab.Screen name="Settings" component={SettingsStack} />
       <Tab.Screen name="Profile" component={ProfileStack} />
     </Tab.Navigator>
   );

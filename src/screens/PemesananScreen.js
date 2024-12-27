@@ -130,9 +130,7 @@ const PemesananScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Pemesanan</Text>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Text style={styles.backButtonText}>Kembali</Text>
-      </TouchableOpacity>
+      
       <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.dateButton}>
         <Text style={styles.dateButtonText}>Pilih Tanggal Pesanan</Text>
       </TouchableOpacity>
@@ -217,12 +215,12 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   backButton: {
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#ddd',
+    backgroundColor: '#DA7297',
+    padding: 15,
     borderRadius: 5,
-    marginBottom: 15,
+    margin: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   backButtonText: {
     fontSize: 16,

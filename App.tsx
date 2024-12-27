@@ -66,7 +66,6 @@ const App = () => {
         <Stack.Screen name="ServiceAdmin" component={ServiceAdmin} />
         <Stack.Screen name="Navigasi" component={Navigasi} />
         <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-        <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
         <Stack.Screen name="DashboardScreen" component={DashboardScreen} />
         <Stack.Screen name="PegawaiScreen" component={PegawaiScreen} />
         <Stack.Screen name="Pelayanan" component={PelayananScreen} />
