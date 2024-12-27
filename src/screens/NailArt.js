@@ -21,21 +21,8 @@ const NailArt = ({ navigation }) => {
   }, []);
 
   const renderImage = (imagePath) => {
-    // Jika gambar adalah URL
-    const baseURL = `http://${global.myApi}/nailartapp/`; // Base URL server jika gambar di-host di server
-    if (imagePath.includes('http')) {
-      return { uri: imagePath }; // Gambar dari URL langsung
-    }
-    
-    // Jika gambar lokal dalam proyek (assets/images/)
-    const images = {
-      'assets/images/manicure.jpg': require('../../assets/images/manicure.jpg'), // Sesuaikan path relatif
-      'assets/images/pedicure.jpg': require('../../assets/images/pedicure.jpg'), // Sesuaikan path relatif
-      'assets/images/nail_art_design.jpg': require('../../assets/images/nail_art_design.jpg'), // Sesuaikan path relatif
-      // Tambahkan gambar lainnya sesuai kebutuhan
-    };
-
-    return images[imagePath] || { uri: `${baseURL}${imagePath}` }; // Menggabungkan baseURL jika gambar lokal tidak ditemukan
+    const baseURL = `http://${global.myApi}/nailartapp/src/service/uploads/`; // Base URL server jika gambar di-host di server
+    return { uri: `${baseURL}${imagePath}` }; // Menggabungkan baseURL dengan path gambar dari database
   };
 
   return (
