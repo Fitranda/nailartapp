@@ -20,6 +20,7 @@ import PemesananClientScreen from './src/screens/PemesananClientScreen';
 import CrudPegawai from './src/screens/CrudPegawai';
 import BuatPesananScreen from './src/screens/BuatPesananScreen';
 import SplashScreen from './src/screens/SplashScreen';
+import CreditScreen from './src/screens/CreditScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -62,6 +63,7 @@ const App = () => {
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name="NailArt" component={NailArt} />
         <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Credit" component={CreditScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="ServiceAdmin" component={ServiceAdmin} />
         <Stack.Screen name="Navigasi" component={Navigasi} />

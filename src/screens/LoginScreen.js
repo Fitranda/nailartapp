@@ -116,6 +116,9 @@ const LoginScreen = ({ navigation }) => {
       <Text style={styles.link} onPress={() => navigation.navigate('Register')}>
         Don't have an account? Register here
       </Text>
+      <View style={styles.creditButton}>
+        <Button title="Credits" onPress={() => navigation.navigate('Credit')} />
+      </View>
     </View>
   );
 };
@@ -148,6 +151,9 @@ const styles = StyleSheet.create({
   error: {
     color: 'red',
     marginTop: 10,
+  },
+  creditButton: {
+    marginTop: 20,
   },
 });
 
